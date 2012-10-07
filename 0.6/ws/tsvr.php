@@ -25,7 +25,7 @@ $z = $cleaned["z"];
 $outProj = (isset($cleaned['outProj'])) ? $cleaned['outProj']: '900913';
 adjustProj($outProj);
 
-$conn=pg_connect("dbname=gis user=gis");
+$conn=pg_connect("host=localhost dbname=osmgb user=graham password=1234");
 
 $bbox = get_sphmerc_bbox($x,$y,$z);
 if(isset($cleaned["kothic"]) && $cleaned["kothic"])
@@ -68,6 +68,7 @@ if(isset($cleaned["kothic"]) && $cleaned["kothic"])
     $data=$bg->getData($cleaned,CONTOUR_CACHE."/$kg/$z/$x/$y.json",$outProj);
     $data["granularity"] = $kg;
     $data["bbox"] = array($sw['lon'],$sw['lat'],$ne['lon'],$ne['lat']);
+    header("Content-type: application/json");
     echo "onKothicDataResponse(".json_encode($data).",$z,$x,$y);";
 }
 else

@@ -1,10 +1,10 @@
 <?php
 
-require_once('/home/www-data/private/defines.php');
+//require_once('/home/www-data/private/defines.php');
 
 session_start();
 
-$conn=pg_connect("dbname=gis user=gis");
+$conn=pg_connect("host=localhost dbname=osmgb user=graham password=1234");
 
 $lat = (isset($_GET['lat'])) ? $_GET['lat']: "null"; 
 $lon = (isset($_GET['lon'])) ? $_GET['lon']: "null";

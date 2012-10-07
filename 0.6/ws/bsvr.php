@@ -20,7 +20,7 @@ require_once('../../lib/latlong.php');
 // outProj = output projection (projection of output data)
 // format = geojson or xml
 
-$conn=pg_connect("dbname=gis user=gis");
+$conn=pg_connect("host=localhost dbname=osmgb user=graham password=1234");
 $cleaned = clean_input($_REQUEST);
 $cleaned["format"] = (isset($cleaned["format"])) ? $cleaned["format"]:"xml";
 

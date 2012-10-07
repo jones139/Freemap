@@ -6,7 +6,7 @@ require_once('Walkroute.php');
 require_once('../User.php');
 
 
-$pconn=pg_connect("dbname=gis user=gis");
+$pconn=pg_connect("host=localhost dbname=osmgb user=graham password=1234");
 $cleaned=clean_input($_REQUEST,'pgsql');
 
 

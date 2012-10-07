@@ -3,6 +3,8 @@ function Freemap(lat,lon,zoom)
 {
     var tileUrl = 'http://www.free-map.org.uk/0.6/ws/tsvr.php' +
         '?x={x}&y={y}&z={z}&way=all&poi=all&kothic=1&contour=1&coastline=1';
+//    var tileUrl = 'http://maps.webhop.net/Freemap/0.6/ws/tsvr.php' +
+//        '?x={x}&y={y}&z={z}&way=all&poi=all&kothic=1&contour=0&coastline=1';
 
     this.kothic=new L.TileLayer.Kothic(tileUrl,{minZoom:11,
             attribution: 'Map data &copy; 2012 OpenStreetMap contributors,'+
@@ -18,7 +20,8 @@ function Freemap(lat,lon,zoom)
     this.walkrouteStartsLayer = new L.GeoJSON();
 
     var FootIcon = L.Icon.extend (
-        {iconUrl: '/0.6/images/foot.png',
+        {//iconUrl: '/0.6/images/foot.png',
+	 iconUrl: 'images/foot.png',
         shadowUrl: null,
         iconSize: new L.Point(16,16),
         shadowSize: null,
@@ -102,7 +105,8 @@ function Freemap(lat,lon,zoom)
                             document.getElementById('_wr_togpx').onclick = 
                                 function() { 
                                     window.location=
-                                    '/0.6/ws/wr.php?action=get&id='+
+                                    //'/0.6/ws/wr.php?action=get&id='+
+                                    'ws/wr.php?action=get&id='+
                                     e.properties.id+'&format=gpx' 
                                 };
                             this.wrViewMgr.loadRoute(e.properties.id);
@@ -113,7 +117,8 @@ function Freemap(lat,lon,zoom)
 
 
     new SearchWidget ('searchdiv',
-                        { url: '/0.6/ws/search.php',
+                        { url: //'/0.6/ws/search.php',
+			  'ws/search.php',
                           callback: this.setLocation.bind(this),
                           parameters: 'poi=all&outProj=4326' } );
     this.ajax=new Ajax();
@@ -179,12 +184,14 @@ function Freemap(lat,lon,zoom)
     }
 
     this.annotationLoader = new FeatureLoader
-        ('/0.6/ws/bsvr.php',
+        (//'/0.6/ws/bsvr.php',
+	    'ws/bsvr.php',
         this.geojsonLayer,
         'inProj=4326&outProj=4326&ann=1&format=geojson');
 
     this.walkrouteStartsLoader = new FeatureLoader
-        ('/0.6/ws/wr.php',
+        (//'/0.6/ws/wr.php',
+	    'ws/wr.php',
         this.walkrouteStartsLayer,
         'action=getByBbox&format=json');
 
@@ -232,7 +239,8 @@ Freemap.prototype.setLoggedIn = function(status)
 Freemap.prototype.dlgOkPressed = function(e)
 {
     e.stopPropagation();
-    this.ajax.sendRequest('/0.6/ws/annotation.php',
+    this.ajax.sendRequest(//'/0.6/ws/annotation.php',
+	'ws/annotation.php',
                             { method: 'POST',
                             parameters: 'action=create&text=' +
                                 document.getElementById('annotation').value+
@@ -407,7 +415,8 @@ Freemap.prototype.getImage = function()
     //document.getElementById('results').appendChild(document.createTextNode(base64));
     /*
     this.ajax.sendRequest
-        ('/0.6/ws/wr.php',
+        (//'/0.6/ws/wr.php',
+	'ws/wr.php',
             { method: 'POST',
               parameters: 'data='+base64+'&action=postImage',
               callback: function() { alert('done'); } 
@@ -433,7 +442,8 @@ Freemap.prototype.markerDragEnd = function(ev)
 
     if(p.x>=20 && p.x<=51 && p.y>=trashTop && p.y<=trashTop+63)
     {
-        this.ajax.sendRequest('/0.6/ws/annotation.php',
+        this.ajax.sendRequest(//'/0.6/ws/annotation.php',
+	    'ws/annotation.php',
                                 { method: 'POST',
                                   parameters: 'action=delete&id='+
                                       ev.target.id,
@@ -451,7 +461,8 @@ Freemap.prototype.markerDragEnd = function(ev)
     }
     else
     {
-        this.ajax.sendRequest('/0.6/ws/annotation.php',
+        this.ajax.sendRequest(//'/0.6/ws/annotation.php',
+	    'ws/annotation.php',
                             { method: 'POST',
                               parameters: 'action=move&lat=' +
                               ev.target.getLatLng().lat+'&lon='+

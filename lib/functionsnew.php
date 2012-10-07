@@ -1,8 +1,8 @@
 <?php
 
 
-require_once('/home/www-data/private/defines.php');
-require_once('/var/www/common/defines.php');
+//require_once('/home/www-data/private/defines.php');
+//require_once('/var/www/common/defines.php');
 require_once('latlong.php');
 
 define ('HALF_EARTH', 20037508.34);
