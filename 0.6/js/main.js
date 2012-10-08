@@ -1,10 +1,10 @@
 
 function Freemap(lat,lon,zoom)
 {
-    var tileUrl = 'http://www.free-map.org.uk/0.6/ws/tsvr.php' +
-        '?x={x}&y={y}&z={z}&way=all&poi=all&kothic=1&contour=1&coastline=1';
-//    var tileUrl = 'http://maps.webhop.net/Freemap/0.6/ws/tsvr.php' +
-//        '?x={x}&y={y}&z={z}&way=all&poi=all&kothic=1&contour=0&coastline=1';
+//    var tileUrl = 'http://www.free-map.org.uk/0.6/ws/tsvr.php' +
+//        '?x={x}&y={y}&z={z}&way=all&poi=all&kothic=1&contour=1&coastline=1';
+    var tileUrl = 'http://maps.webhop.net/Freemap/0.6/ws/tsvr.php' +
+        '?x={x}&y={y}&z={z}&way=all&poi=all&kothic=1&contour=0&coastline=1';
 
     this.kothic=new L.TileLayer.Kothic(tileUrl,{minZoom:11,
             attribution: 'Map data &copy; 2012 OpenStreetMap contributors,'+
