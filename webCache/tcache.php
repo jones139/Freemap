@@ -30,8 +30,8 @@ if (isset($x) and isset($y) and isset($z)) {
   // URL Valid, so do something....
   if ($debug) echo "Valid URL<br>\n";
   // See if the tile is already in the cache or not
-  $path=$cacheDir."/".$z."/".$y;
-  $fname=$path."/".$x.".js";
+  $path=$cacheDir."/".$z."/".$x;
+  $fname=$path."/".$y.".js";
   if ($debug) echo "path=".$path."<br>\n";
   if ($debug) echo "fname=".$fname."<br>\n";
   if (is_dir($path)) {
