@@ -432,7 +432,14 @@ class BboxGetter extends DataGetter
         }
         return $features;
     }
-
+    // NAME: getCoastlineData
+    // DESC: Extracts coastline data from the database in the area bounded
+    //       by bounding box $this->bbox, and populates $this->data["features"]
+    //       with the coastline geometry.
+    //       The SQL to extract the coastline is defined in function
+    //       getCoastlineQuery in the DBDetails.php file.
+    //
+    // HIST: Original by Nick Whitelegg
     function getCoastlineData()
     {
         if($this->kothic_gran!==null)

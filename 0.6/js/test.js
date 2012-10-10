@@ -10,12 +10,18 @@ function Freemap(lat,lon,zoom)
 
     this.kothic=new L.TileLayer.Kothic(tileUrl,{minZoom:11,
             attribution: 'Map data &copy; 2012 OpenStreetMap contributors,'+
-                'CC-by-SA,'+
                 'contours &copy; Crown Copyright and database right '+
                 'Ordnance Survey 2011, Rendering by '+
                 '<a href="http://github.com/kothic/kothic-js">Kothic JS</a>'} );
 
-    this.map = new L.Map('map',{layers:[this.kothic]});
+    var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var osmAttrib = 'Map data &copy; 2012 OpenStreetMap contributors'
+    this.osmLayer = new L.TileLayer(osmUrl, {maxZoom: 10, attribution: osmAttrib});
+    
+
+    this.map = new L.Map('map',{layers:[this.osmLayer,this.kothic]});
+    var layerControl = new L.Control.Layers({'osm':this.osmLayer,'freemap':this.kothic}, null)
+    this.map.addControl(layerControl);;    
     if(lat===null) 
     {
         lat = (window.localStorage && 
