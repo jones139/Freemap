@@ -1,0 +1,13 @@
+Freemap Web Service README
+==========================
+
+Setup:
+Import OSM data into database using osm2pgsql.
+
+Download coastline data: 
+	 wget http://tile.openstreetmap.org/processed_p.tar.bz2 >wget.log 2>&1 &
+Extract coastline shapefile:
+	tar -xjvf processed_p.tar.bz2
+Import into database:
+       shp2pgsql processed_p.shp coastlines | psql -d osmgb >psql.out 2>&1 &
+

@@ -478,7 +478,8 @@ function adjustProj(&$proj)
 
 function get_high_level ($tags)
 {
-    $highlevel = array("pub" => array ("amenity","pub"),
+    $highlevel = array(
+	      "pub" => array ("amenity","pub"),
               "car park"=>array("amenity","parking"),
               "viewpoint"=>array("tourism","viewpoint"),
               "hill"=>array("natural","peak"),
@@ -492,8 +493,11 @@ function get_high_level ($tags)
 
     foreach ($highlevel as $h=>$t)
     {
+      echo "Checking for ".$t[0]."<br>\n";
+      if (array_key_exists($t[0],$tags) {
         if ($tags[$t[0]] && $tags[$t[0]] == $t[1])
             return $h;
+	}
     }
     return "unknown"; 
 }
