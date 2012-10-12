@@ -12,9 +12,7 @@
 //
 // 08oct2012  GJ  ORIGINAL VERSION
 //
-$dbsUrl = 'http://maps.webhop.net/Freemap/0.6/ws/tsvr.php';
-$cacheDir = '/var/www/Freemap/cacheDir';
-$debug = false;
+include("config.php");
 
 if (isset($_GET['x']))
   $x = $_GET['x'];

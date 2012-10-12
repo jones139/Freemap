@@ -493,8 +493,8 @@ function get_high_level ($tags)
 
     foreach ($highlevel as $h=>$t)
     {
-      echo "Checking for ".$t[0]."<br>\n";
-      if (array_key_exists($t[0],$tags) {
+      //#echo "Checking for ".$t[0]."<br>\n";
+      if (array_key_exists($t[0],$tags)) {
         if ($tags[$t[0]] && $tags[$t[0]] == $t[1])
             return $h;
 	}

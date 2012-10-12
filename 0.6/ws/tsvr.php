@@ -15,7 +15,7 @@ require_once('DBDetails.php');
 
 $cleaned = clean_input($_REQUEST);
 
-define('CONTOUR_CACHE','/var/www/images/contours');
+define('CONTOUR_CACHE','/var/www/Freemap/images/contours');
 
 $x = $cleaned["x"];
 $y = $cleaned["y"];

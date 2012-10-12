@@ -3,7 +3,7 @@ function Freemap(lat,lon,zoom)
 {
 //    var tileUrl = 'http://www.free-map.org.uk/0.6/ws/tsvr.php' +
 //        '?x={x}&y={y}&z={z}&way=all&poi=all&kothic=1&contour=1&coastline=1';
-    var tileUrl = 'http://maps.webhop.net/Freemap/0.6/ws/tsvr.php' +
+    var tileUrl = 'http://maps.webhop.net/Freemap/webCache/tcache.php' +
         '?x={x}&y={y}&z={z}&way=all&poi=all&kothic=1&contour=0&coastline=1';
 
     this.kothic=new L.TileLayer.Kothic(tileUrl,{minZoom:11,
@@ -41,13 +41,13 @@ function Freemap(lat,lon,zoom)
     {
         lat = (window.localStorage && 
             window.localStorage.getItem("lat")!==null) 
-            ? window.localStorage.getItem("lat") : 51.05;
+            ? window.localStorage.getItem("lat") : 54.726;
     }
     if(lon===null) 
     {
         lon = (window.localStorage && 
             window.localStorage.getItem("lon")!==null) 
-            ? window.localStorage.getItem("lon") : -0.72; 
+            ? window.localStorage.getItem("lon") : -1.96; 
     }
     if(zoom===null) 
     {

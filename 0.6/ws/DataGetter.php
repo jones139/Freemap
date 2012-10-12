@@ -1,4 +1,5 @@
 <?php
+$debug=false;
 require_once('DBDetails.php');
 
 class DataGetter
@@ -8,6 +9,8 @@ class DataGetter
 
     function __construct($kothic_gran=null, $dbdetails=null, $srid="900913")
     {
+      global $debug;
+      $this->debug = $debug;
         $this->data = array();
         $this->data["features"] = array();
         $this->data["type"] = "FeatureCollection";
@@ -242,6 +245,7 @@ class DataGetter
     {
         for($f=0; $f<count($this->data["features"]); $f++)
         {
+	  if (array_key_exists("geometry",$this->data["features"][$f]))
             switch($this->data["features"][$f]["geometry"]["type"])
             {
                 case "Point":
@@ -447,6 +451,7 @@ class BboxGetter extends DataGetter
             $factor = $this->kothic_gran / ($this->bbox[2]-$this->bbox[0]);
         }
         $q=$this->dbq->getCoastlineQuery($this->geomtxt);
+	if ($this->debug) print "coastline query=".$q."<br>\n";
         if($q===null)
             return;
         $result=pg_query($q);
