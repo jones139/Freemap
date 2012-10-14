@@ -34,6 +34,24 @@ class dataMgr:
 
         self.shpExt = ["shp","prj","shx","dbf"]
 
+    def reprojectTiff(self,inFname,outFname):
+        """ Reproject the geotiff named inFname to the google project
+        ESPG:900913, and save it to outFname.
+        14oct2012  GJ ORIGINAL VERSION
+        """
+        if not os.path.exists(inFname):
+            print "reprojectTiff - input file %s does not exist - doing nothing." % inFname
+            return
+        if os.path.exists(outFname):
+            print "reprojectTiff - removing output file %s." % outFname
+            # Remove the temporary reprojected geotiff.
+            os.remove(outFname)
+
+        print "      re-projecting SRTM data to map projection..."
+        os.system("gdalwarp -of GTiff -co \"TILED=YES\" -srcnodata 32767 -t_srs \"+proj=merc +ellps=sphere +R=6378137 +a=6378137 +units=m\" -rcs -order 3 -tr 30 30 -multi %s %s" % (inFname,outFname))
+        print "reprojectTiff finished..."
+
+
     def getSRTMData(self,sysCfg):
         """ Downloads SRTM data, converts it to contours, and uploads
         it into a postgresql database.
@@ -41,14 +59,9 @@ class dataMgr:
         """
         print "getSRTMData"
         origWd = os.getcwd()
-        srtmTmpDirName = "srtm_tmp"
-        mergeHgt = "srtm.hgt"
-        mergeTif = "srtm.tiff"
-        contoursShp = "contours.shp"
-        hillshadeTif = "hillshade.tiff"
+        reprojTif = "srtm_reproj.tiff"
 
-        jobDir = sysCfg['jobDir']
-        srtmTmpDir = "%s" % (jobDir)
+        srtmTmpDir = "%s" % (sysCfg['srtmTmpDir'])
 
         downloader = srtm.SRTMDownloader(cachedir=sysCfg['srtmDir'])
         downloader.loadFileList()
@@ -59,7 +72,8 @@ class dataMgr:
 
         if not os.path.exists(srtmTmpDir):
             os.makedirs(srtmTmpDir)
-        os.chdir(srtmTmpDir)
+        #os.chdir(srtmTmpDir)
+        isFirst = True
         for tileFnameZip in tileSet:
             tileFname = tileFnameZip.split(".zip")[0]
             fnameZipParts = tileFnameZip.split("/")
@@ -79,22 +93,37 @@ class dataMgr:
                 print tileFnameZip,fname
                 # uncompress the raw srtm file.
                 if not os.path.exists(tileFname):
+                    print "uncompressing %s." % tileFnameZip
                     os.system("unzip %s" % (tileFnameZip))
+                print "Reprojecting...."
+                self.reprojectTiff(tileFname,reprojTif)
+                if os.path.exists(reprojTif):
+                    print "Generating Contour Lines...."
+                    os.system("gdal_contour -i 10 -snodata 32767 -a height %s %s" %
+                              (reprojTif,contourFname))
+                else:
+                    print "Oh no - reprojected geoTiff %s does not exist...."\
+                        % reprojTif
+                    
 
-                print "Generating Contour Lines...."
-                os.system("gdal_contour -i 10 -snodata 32767 -a height %s %s" %
-                          (tileFname,contourFname))
-            os.chdir(srtmTmpDir)
-            # create symbolic link to contours shape file.
-            print "Linking contours file"
-            contourFnameBase = contourFname.split(".shp")[0]
-            fnameBase = contourFnameBase.split("/")[-1]
-            for ext in self.shpExt:
-                fname = "%s.%s" % (fnameBase,ext)
-                if os.path.exists(fname):
-                    os.remove(fname)
-                os.symlink("%s.%s" % (contourFnameBase,ext),
-                           "%s" % (fname))
+            ########################################################
+            # Create SQL required to upload contours to postgresql database
+            # This needs to be done separately with psql -f ***.sql.
+            contourSqlFname = "%s%s" % (tileFname,".contours.sql");
+
+            # Create SQL to initialise the database if necessary
+            contourSqlInitFname = "contours_init.sql"
+            if not os.path.exists(contourSqlInitFname):
+                os.system("shp2pgsql -p -s 900913 %s contours > %s" %
+                          (contourFname,contourSqlInitFname))
+
+            if not os.path.exists(contourSqlFname):
+                if os.path.exists(contourFname):
+                    shp2pgsqlOpts = "-a"
+                    os.system("shp2pgsql %s -s 900913 %s contours > %s" % 
+                      (shp2pgsqlOpts,contourFname,contourSqlFname))
+            else:
+                print "Error - Contour shape file %s does not exist.." % contourFname
             ###############################################################
             # Get the pre-generated hillshade .tiff file if it exists.
             hillshadeFname = "%s%s" % (tileFname,".hillshade.tiff")
@@ -111,22 +140,14 @@ class dataMgr:
                         print "%s still does not exist...." % (tileFname)
                         print "it is probably in %s" % (srtmTmpDir)
                 print "Generating Hillshade file...."
+                if not os.path.exists(reprojtif):
+                    self.reprojectTiff(tileFname,reprojTif)
                 print "Generating Hillshading overlay image...."
-                print "      re-projecting SRTM data to map projection..."
-                os.system("gdalwarp -of GTiff -co \"TILED=YES\" -srcnodata 32767 -t_srs \"+proj=merc +ellps=sphere +R=6378137 +a=6378137 +units=m\" -rcs -order 3 -tr 30 30 -multi %s %s" % (tileFname,mergeTif))
                 print "      generating hillshade image...."
-                os.system("gdaldem hillshade  %s %s -z 2" % (mergeTif,hillshadeFname))
+                os.system("gdaldem hillshade  %s %s -z 2" % (reprojTif,hillshadeFname))
                 # Remove the temporary reprojected geotiff.
-                os.remove(mergeTif)
-
-            os.chdir(srtmTmpDir)
-            # create symbolic link hillshade tiff file.
-            print "Linking hillshade file"
-            fname = hillshadeFname.split("/")[-1]
-            if os.path.exists(fname):
-                os.remove(fname)
-            os.symlink("%s" % (hillshadeFname),
-                       "%s" % (fname))
+                if os.path.exists(reprojTif):
+                    os.remove(reprojTif)
 
             # Remove the uncompressed raw srtm tile from the cache.
             if os.path.exists(tileFname):
@@ -142,8 +163,8 @@ if __name__ == "__main__":
     print "dataMgr.py"
     sysCfg = {}
     sysCfg['ll'] = (-6.5,49.5,2.1,59.0)
-    sysCfg['srtmDir'] = "/home/disk2/graham/Freemap/srtm/srtm/raw"
-    sysCfg['jobDir']  = "/home/disk2/graham/Freemap/srtm/srtm/processed"
+    sysCfg['srtmDir'] = "/home/disk2/graham/Freemap/srtm/data"
+    sysCfg['srtmTmpDir']  = "/home/disk2/graham/Freemap/srtm/tmp"
     dm = dataMgr(sysCfg)
     dm.getSRTMData(sysCfg)
     print "done"
