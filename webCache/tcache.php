@@ -13,6 +13,9 @@
 // 08oct2012  GJ  ORIGINAL VERSION
 //
 include("config.php");
+include("logger.php");
+
+write_log("tcache.php start",DEFAULT_LOG);
 
 if (isset($_GET['x']))
   $x = $_GET['x'];
@@ -26,12 +29,11 @@ if (isset($_GET['debug'])) $debug=true;
 // Do we have a valid URL?
 if (isset($x) and isset($y) and isset($z)) {
   // URL Valid, so do something....
-  if ($debug) echo "Valid URL<br>\n";
   // See if the tile is already in the cache or not
   $path=$cacheDir."/".$z."/".$x;
   $fname=$path."/".$y.".js";
-  if ($debug) echo "path=".$path."<br>\n";
-  if ($debug) echo "fname=".$fname."<br>\n";
+  if ($debug) write_log("path=".$path,DEFAULT_LOG);
+  if ($debug) write_log("fname=".$fname,DEFAULT_LOG);
   if (is_dir($path)) {
     if (is_file($fname)) {
       $isInCache = true;
@@ -44,20 +46,22 @@ if (isset($x) and isset($y) and isset($z)) {
   }
 
   if ($isInCache) {
-    if ($debug) echo "File is in chache - retrieving cached version...<br>\n";
+    if ($debug) write_log("File is in chache - retrieving cached version...",DEFAULT_LOG);
     $contents=file_get_contents($fname);
   } else {
-    if ($debug) echo "File not cached - retrieving from server...<br>\n";
+    if ($debug) write_log("File not cached - retrieving from server...",DEFAULT_LOG);
     // The file is not in the cache, so we need to retrieve it from the server.
     $url = $dbsUrl . "?x=".$x."&y=".$y."&z=".$z."&way=all&poi=all&kothic=1&contour=1&coastline=1";
-    if ($debug) echo "url=".$url;
+    if ($debug) write_log("url=".$url,DEFAULT_LOG);
     $ch = curl_init( $url );
     curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
     curl_setopt( $ch, CURLOPT_HEADER, true );
     curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
     curl_setopt( $ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT'] );
+    curl_setopt( $ch, CURLOPT_TIMEOUT, 120 );
     list( $header, $contents ) = preg_split( '/([\r\n][\r\n])\\1/', curl_exec( $ch ), 2 );
     $status = curl_getinfo( $ch );
+    if ($debug) write_log("curl status = ".$status['http_code'],DEFAULT_LOG);
     curl_close( $ch );
     $retVal = file_put_contents($fname,$contents);
   }
@@ -66,6 +70,7 @@ if (isset($x) and isset($y) and isset($z)) {
   // URL invalid, so just return an error and give up.
   echo "ERROR - Invalid URL - must specify x,y and z for this to work!<br>\n";
 }
+if ($debug) write_log("tcache.php end",DEFAULT_LOG);
 
 
 
