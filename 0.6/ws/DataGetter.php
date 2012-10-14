@@ -31,7 +31,7 @@ class DataGetter
                     array("table"=>"planet_osm_polygon",
                             "col"=>"way"),
                     array("table"=>"contours",
-                            "col"=>"way"),
+                            "col"=>"the_geom"),
                     array("table"=>"coastlines",
                             "col"=>"the_geom"),
                     array("table"=>"annotations",
