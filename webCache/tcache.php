@@ -65,6 +65,7 @@ if (isset($x) and isset($y) and isset($z)) {
     curl_close( $ch );
     $retVal = file_put_contents($fname,$contents);
   }
+  header('Content-Type: text/javascript; charset=utf8');
   echo $contents;
 } else {
   // URL invalid, so just return an error and give up.
