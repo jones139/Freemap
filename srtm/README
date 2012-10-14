@@ -1,0 +1,28 @@
+Freemap SRTM Data
+=================
+
+The scripts in this directory can:
+    - download SRTM elevation data from NASA's servers
+    - reproject it into the Google style mercator projection
+    - create shapefiles containing contour line versions of the data
+    - create geotiffs containing hillshade versions of the data
+    - create sql files that can be used to upload the contour data into a
+      	     postgresql database.
+    - upload the sql contour data into the a postgresql/postgis database.
+
+The data processing is separated from the database upload, as this may 
+be done on two different machines.
+
+The data processing is done using makeContours.py.  This puts its output data
+in a ./data directory.  Note that it is hard coded for the uk bounding box - change the 'll' variable to change the area to be processed.
+
+Upload is done using upload_contours.sh.
+
+Note that these are very crude, so may fail if your database setup is different
+to mine etc.....
+
+
+Any trouble, contact grahamjones139@gmail.com.
+
+
+Graham.
