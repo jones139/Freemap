@@ -8,7 +8,7 @@ function Freemap(lat,lon,zoom)
     var tileUrl = 'http://freemap.maps3.org.uk/webCache/tcache.php' +
         '?x={x}&y={y}&z={z}';
 
-    this.kothic=new L.TileLayer.Kothic(tileUrl,{minZoom:11,
+    this.kothic=new L.TileLayer.Kothic(tileUrl,{minZoom:4,
             attribution: 'Map data &copy; 2012 OpenStreetMap contributors,'+
                 'contours &copy; Crown Copyright and database right '+
                 'Ordnance Survey 2011, Rendering by '+
@@ -16,11 +16,16 @@ function Freemap(lat,lon,zoom)
 
     var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     var osmAttrib = 'Map data &copy; 2012 OpenStreetMap contributors'
-    this.osmLayer = new L.TileLayer(osmUrl, {maxZoom: 10, attribution: osmAttrib});
+    this.osmLayer = new L.TileLayer(osmUrl, 
+				    {maxZoom: 10, 
+				     attribution: osmAttrib,
+				     opacity:0.25
+				    });
     
 
     this.map = new L.Map('map',{layers:[this.osmLayer,this.kothic]});
-    var layerControl = new L.Control.Layers({'osm':this.osmLayer,'freemap':this.kothic}, null)
+    var layerControl = new L.Control.Layers({'osm':this.osmLayer},
+					    {'freemap':this.kothic});
     this.map.addControl(layerControl);;    
     if(lat===null) 
     {
