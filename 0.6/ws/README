@@ -9,5 +9,5 @@ Download coastline data:
 Extract coastline shapefile:
 	tar -xjvf processed_p.tar.bz2
 Import into database:
-       shp2pgsql processed_p.shp coastlines | psql -d osmgb >psql.out 2>&1 &
+       shp2pgsql -s 900913 processed_p.shp coastlines | psql -d osmgb >psql.out 2>&1 &
 
