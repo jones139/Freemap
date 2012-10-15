@@ -32,7 +32,7 @@ if (isset($x) and isset($y) and isset($z)) {
   // See if the tile is already in the cache or not
   $path=$cacheDir."/".$z."/".$x;
   $fname=$path."/".$y.".js";
-  if ($debug) write_log("path=".$path,DEFAULT_LOG);
+  //if ($debug) write_log("path=".$path,DEFAULT_LOG);
   if ($debug) write_log("fname=".$fname,DEFAULT_LOG);
   if (is_dir($path)) {
     if (is_file($fname)) {
@@ -58,12 +58,17 @@ if (isset($x) and isset($y) and isset($z)) {
     curl_setopt( $ch, CURLOPT_HEADER, true );
     curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
     curl_setopt( $ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT'] );
-    curl_setopt( $ch, CURLOPT_TIMEOUT, 120 );
+    curl_setopt( $ch, CURLOPT_TIMEOUT, 180 );
     list( $header, $contents ) = preg_split( '/([\r\n][\r\n])\\1/', curl_exec( $ch ), 2 );
     $status = curl_getinfo( $ch );
     if ($debug) write_log("curl status = ".$status['http_code'],DEFAULT_LOG);
     curl_close( $ch );
-    $retVal = file_put_contents($fname,$contents);
+    if ($status['http_code']==200) {
+      if ($debug) write_log("Retrieve data ok - saving",DEFAULT_LOG);
+      $retVal = file_put_contents($fname,$contents);
+    } else {
+      if ($debug) write_log("Problem Retrieving Data - not saving it.",DEFAULT_LOG);
+    }
   }
   header('Content-Type: text/javascript; charset=utf8');
   echo $contents;

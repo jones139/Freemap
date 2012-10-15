@@ -17,7 +17,7 @@ function Freemap(lat,lon,zoom)
     var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     var osmAttrib = 'Map data &copy; 2012 OpenStreetMap contributors'
     this.osmLayer = new L.TileLayer(osmUrl, 
-				    {maxZoom: 10, 
+				    {minZoom: 4, 
 				     attribution: osmAttrib,
 				     opacity:0.25
 				    });
@@ -26,7 +26,8 @@ function Freemap(lat,lon,zoom)
     this.map = new L.Map('map',{layers:[this.osmLayer,this.kothic]});
     var layerControl = new L.Control.Layers({'osm':this.osmLayer},
 					    {'freemap':this.kothic});
-    this.map.addControl(layerControl);;    
+    this.map.addControl(layerControl);
+
     if(lat===null) 
     {
         lat = (window.localStorage && 
@@ -48,6 +49,11 @@ function Freemap(lat,lon,zoom)
 
     var startPos= new L.LatLng(lat,lon);
     this.map.setView(new L.LatLng(lat,lon),zoom).addLayer(this.kothic);
+    //this.map.addEventListener('moveend',this.updatePermaLink(this));
+    //this.map.addEventListener('zoomend',this.updatePermaLink(this));
+    this.map.on('dragend',this.updatePermaLink.bind(this));
+    this.map.on('zoomend',this.updatePermaLink.bind(this));
+    this.updatePermaLink();
 }
 
 
@@ -56,6 +62,20 @@ Freemap.prototype.setLocation = function(x,y)
     this.map.panTo(new L.LatLng(y,x));
     this.saveLocation();
 }
+
+Freemap.prototype.updatePermaLink = function() {
+    // update the permalink on the main map page based on the current map
+    // state.
+    var centrePt = this.map.getCenter();
+    var curLat = centrePt.lat;
+    var curLon = centrePt.lng;
+    var curZoom = this.map.getZoom();
+    var pageURL = document.location.href.split('?')[0];
+    var hrefURL = [pageURL, '?lon=', curLon, '&lat=', curLat, '&zoom=',
+        curZoom].join('');
+    document.getElementById("permaLink").href=hrefURL;
+}
+
 
 
 function init()

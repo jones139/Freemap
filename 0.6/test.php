@@ -30,6 +30,15 @@ var zoom=<?php echo $zoom;?>;
 <h3>Freemap Test</h3>
 <div style="height:400px; width:600px;" id=map>map goes here</div>
 
-
+<div id="sidebar">
+<a href="http://freemap.maps3.org.uk/cacheDir/debug.log">View Web Server Log</a>
+<br>
+<a href="http://freemap.maps3.org.uk/webCache/clearLog.php">Clear Web Server Log</a>
+<br>
+<a href="http://freemap.maps3.org.uk/webCache/expiretiles.php?x=2544&y=3968&z=13">Expire Tiles (sample url)</a>
+<br>
+<div>
+<a id="permaLink" href="http://freemap.maps3.org.uk/0.6/test.php?lat=55.7&lon=-4.8&zoom=11">PermaLink</a>
+</div>
 
 </body> </html>

@@ -34,9 +34,9 @@ function write_log($message, $logfile='') {
   }
  
   // Get time of request
-  if( ($time = $_SERVER['REQUEST_TIME']) == '') {
+  //if( ($time = $_SERVER['REQUEST_TIME']) == '') {
     $time = time();
-  }
+    //}
  
   // Get IP address
   if( ($remote_addr = $_SERVER['REMOTE_ADDR']) == '') {

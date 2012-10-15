@@ -55,10 +55,10 @@ function clearDir($dirPath,$debug) {
 		     RecursiveIteratorIterator::CHILD_FIRST);
     foreach ($iterator as $path) {
       if ($path->isDir()) {
-	if ($debug) echo "removing directory ".$path->__toString();
+	if ($debug) echo "removing directory ".$path->__toString()."<br>\n";
 	rmdir($path->__toString());
       } else {
-	if ($debug) echo "removing ".$path->__toString();
+	if ($debug) echo "removing ".$path->__toString()."<br>\n";
          unlink($path->__toString());
       }
     }
