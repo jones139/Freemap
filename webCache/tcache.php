@@ -58,7 +58,7 @@ if (isset($x) and isset($y) and isset($z)) {
     curl_setopt( $ch, CURLOPT_HEADER, true );
     curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
     curl_setopt( $ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT'] );
-    curl_setopt( $ch, CURLOPT_TIMEOUT, 180 );
+    curl_setopt( $ch, CURLOPT_TIMEOUT, 600 );
     list( $header, $contents ) = preg_split( '/([\r\n][\r\n])\\1/', curl_exec( $ch ), 2 );
     $status = curl_getinfo( $ch );
     if ($debug) write_log("curl status = ".$status['http_code'],DEFAULT_LOG);
