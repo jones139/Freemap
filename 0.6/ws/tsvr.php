@@ -7,13 +7,30 @@
 // kothic - output kothic-js format geojson rather than standard geojson if !=0
 // contours - output LandForm Panorama contours if !=0
 // coastline - output coastline if !=0
+//
+// Parameters are taken from the command line if the script is initialised
+//  from the command line, or as GET/POST parameters otherwise.
+
 
 require_once('../../lib/functionsnew.php');
 require_once('DataGetter.php');
 require_once('xml.php');
 require_once('DBDetails.php');
 
-$cleaned = clean_input($_REQUEST);
+if ($argc == 9) {
+  print var_dump($argv);
+  $cleaned = array();
+  $cleaned["x"] = $argv[1];
+  $cleaned["y"] = $argv[2];
+  $cleaned["z"] = $argv[3];
+  $cleaned["poi"] = $argv[4];
+  $cleaned["way"] = $argv[5];
+  $cleaned["kothic"] = $argv[6];
+  $cleaned["contours"] = $argv[7];
+  $cleaned["coastline"] = $argv[8];
+} else {
+  $cleaned = clean_input($_REQUEST);
+}
 
 define('CONTOUR_CACHE','/var/www/Freemap/images/contours');
 
