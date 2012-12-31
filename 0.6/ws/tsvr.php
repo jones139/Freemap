@@ -12,13 +12,14 @@
 //  from the command line, or as GET/POST parameters otherwise.
 
 
-require_once('../../lib/functionsnew.php');
+require_once(__DIR__.'/../../lib/functionsnew.php');
 require_once('DataGetter.php');
 require_once('xml.php');
 require_once('DBDetails.php');
 
+// Have we been called from the command line with the right number of
+// parameters?  If not, use GET/POST variables instead.
 if ($argc == 9) {
-  print var_dump($argv);
   $cleaned = array();
   $cleaned["x"] = $argv[1];
   $cleaned["y"] = $argv[2];
